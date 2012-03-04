@@ -1,10 +1,15 @@
 package com.karatebancho;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.java.sen.SenFactory;
 import net.java.sen.StreamTagger;
@@ -20,10 +25,25 @@ public class LuceneGosenExample {
 
 	public static void main(String[] args) throws Exception {
 		LuceneGosenExample obj = new LuceneGosenExample();
-		Map<String,String>dic = obj.createDictionary(args);
+		Map<String, String> dic = obj.createDictionary(args);
+		System.out.println("検索キーワード: " + args[1]);
+		String readings = obj.getReadings(args[1]);
 		for (String key : dic.keySet()) {
-			System.out.format("%s:%s%n", key, dic.get(key));
+			int distance = StringUtils.getLevenshteinDistance(
+					readings, key);
+			// 変換ミスなど、辞書にある言葉ベースであれば
+			if (distance < readings.length() / 2) {
+				System.out.format("%s:%s (%d)%n", key, dic.get(key), distance);
+			}
 		}
+
+	}
+
+	public String getReadings(String base) throws Exception {
+		StringTagger stringTagger = SenFactory.getStringTagger(null);
+		List<Token> tokens = new ArrayList<Token>();
+		stringTagger.analyze(base, tokens);
+		return tokens.get(0).getMorpheme().getReadings().get(0);
 	}
 
 	public Map<String, String> createDictionary(String[] args) throws Exception {
