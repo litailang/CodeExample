@@ -43,5 +43,10 @@
   		<artifactId>tomcat-coyote</artifactId>
   		<version>7.0.26</version>
   	</dependency>
+  	<dependency>
+  		<groupId>net.arnx</groupId>
+  		<artifactId>jsonic</artifactId>
+  		<version>1.2.10</version>
+  	</dependency>
   </dependencies>
 </project>
