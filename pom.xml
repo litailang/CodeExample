@@ -33,5 +33,15 @@
   		<artifactId>commons-lang3</artifactId>
   		<version>3.1</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.apache.tomcat</groupId>
+  		<artifactId>tomcat-catalina</artifactId>
+  		<version>7.0.26</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.tomcat</groupId>
+  		<artifactId>tomcat-coyote</artifactId>
+  		<version>7.0.26</version>
+  	</dependency>
   </dependencies>
 </project>
