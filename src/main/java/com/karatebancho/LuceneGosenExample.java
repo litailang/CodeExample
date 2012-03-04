@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.ibm.icu.text.Transliterator;
+
 import net.java.sen.SenFactory;
 import net.java.sen.StreamTagger;
 import net.java.sen.StringTagger;
@@ -21,15 +23,17 @@ import net.java.sen.dictionary.Token;
  * 
  */
 public class LuceneGosenExample {
+	protected static Transliterator trans = Transliterator.getInstance("Katakana-Latin");
 
 	public static void main(String[] args) throws Exception {
 		LuceneGosenExample obj = new LuceneGosenExample();
-		Map<String, String> dic = obj.createDictionary(args);
 		String readings = obj.getReadings(args[1]);
-		System.out.format("検索キーワード: %s(%s)%n",args[1], readings);
+		String latin = trans.transliterate(readings);
+		System.out.format("検索キーワード: %s(%s)%n",args[1], latin);
+		Map<String, String> dic = obj.createDictionary(args);
 		for (String key : dic.keySet()) {
 			int distance = StringUtils.getLevenshteinDistance(
-					readings, key);
+					latin, key);
 			// 変換ミスなど、辞書にある言葉ベースであれば
 			if (distance < readings.length() / 2) {
 				System.out.format("%s:%s (%d)%n", key, dic.get(key), distance);
@@ -76,7 +80,7 @@ public class LuceneGosenExample {
 			// System.out.println(morpheme.getReadings());
 			// System.out.println("--------------------------");
 			if (isTarget(token)) {
-				dic.put(morpheme.getReadings().get(0), token.getSurface());
+				dic.put(trans.transliterate(morpheme.getReadings().get(0)), token.getSurface());
 			}
 		}
 		return dic;
