@@ -26,8 +26,8 @@ public class LuceneGosenExample {
 	public static void main(String[] args) throws Exception {
 		LuceneGosenExample obj = new LuceneGosenExample();
 		Map<String, String> dic = obj.createDictionary(args);
-		System.out.println("検索キーワード: " + args[1]);
 		String readings = obj.getReadings(args[1]);
+		System.out.format("検索キーワード: %s(%s)%n",args[1], readings);
 		for (String key : dic.keySet()) {
 			int distance = StringUtils.getLevenshteinDistance(
 					readings, key);
@@ -43,7 +43,12 @@ public class LuceneGosenExample {
 		StringTagger stringTagger = SenFactory.getStringTagger(null);
 		List<Token> tokens = new ArrayList<Token>();
 		stringTagger.analyze(base, tokens);
-		return tokens.get(0).getMorpheme().getReadings().get(0);
+		StringBuilder sb = new StringBuilder();
+		for (Token token : tokens) {
+			Morpheme morp = token.getMorpheme();
+			sb.append(morp.getReadings().get(0));
+		}
+		return sb.toString();
 	}
 
 	public Map<String, String> createDictionary(String[] args) throws Exception {
